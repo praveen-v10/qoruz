@@ -15,9 +15,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Qoruz',
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
+
       home: const Home(),
     );
   }

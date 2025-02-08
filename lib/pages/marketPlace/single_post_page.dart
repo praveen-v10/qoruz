@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:toastification/toastification.dart';
 
 class SinglePostPage extends StatefulWidget {
   final String idHash;
@@ -41,10 +42,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          'Marketplace',
-          style: TextStyle(color: Colors.white),
-        ),
+
       leading: IconButton(onPressed: (){
         Navigator.pop(context);
       }, icon: Icon(Icons.arrow_back)),
@@ -56,10 +54,20 @@ class _SinglePostPageState extends State<SinglePostPage> {
         actions: [
           IconButton(
             icon: Icon(
-              Icons.delete_outline_outlined,
+              CupertinoIcons.delete,
               color: Colors.red,
             ),
-            onPressed: () {},
+            onPressed: () {
+              toastification.show(
+                context: context, // optional if you use ToastificationWrapper
+                title: Text('Delete Post'),
+                alignment: Alignment.bottomCenter,
+                autoCloseDuration: const Duration(seconds: 3),
+
+                primaryColor: Colors.red,
+                backgroundColor: Colors.white,
+              );
+            },
           ),
 
           Padding(
@@ -78,7 +86,17 @@ class _SinglePostPageState extends State<SinglePostPage> {
                   Icons.share_outlined,
                   color: Colors.white, // White icon color
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  toastification.show(
+                    context: context, // optional if you use ToastificationWrapper
+                    title: Text('Share the Post'),
+                    alignment: Alignment.bottomCenter,
+                    autoCloseDuration: const Duration(seconds: 3),
+
+                    primaryColor: Colors.red,
+                    backgroundColor: Colors.white,
+                  );
+                },
               ),
             ),
           ),
@@ -115,51 +133,68 @@ class _SinglePostPageState extends State<SinglePostPage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ClipOval(
-                          child: SizedBox(
-                            width: 50,  // Set the width of the image (size of the circular profile image)
-                            height: 50, // Set the height of the image (same value as width to maintain a circle)
-                            child: Image(
-                              image: data['user_details']['profile_image'] != null
-                                  ? NetworkImage(data['user_details']['profile_image'])
-                                  : AssetImage('assets/search_bar_icon.png') as ImageProvider,
-                              fit: BoxFit.cover,  // Ensures the image covers the entire circular area
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 14),  // Add space between the image and the name
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                  data['user_details']['name']?.isNotEmpty == true
-                                      ? data['user_details']['name']
-                                      : 'Guest',  // Check if name is empty or null
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                            ClipOval(
+                              child: SizedBox(
+                                width: 50,  // Set the width of the image (size of the circular profile image)
+                                height: 50, // Set the height of the image (same value as width to maintain a circle)
+                                child: Image(
+                                  image: data['user_details']['profile_image'] != null
+                                      ? NetworkImage(data['user_details']['profile_image'])
+                                      : AssetImage('assets/search_bar_icon.png') as ImageProvider,
+                                  fit: BoxFit.cover,  // Ensures the image covers the entire circular area
                                 ),
-                                SizedBox(width: 6),
-                                Icon(Icons.verified_user_outlined, color: Colors.green, size: 18),
-                              ],
+                              ),
                             ),
-                            Text(
-                              '${data['user_details']['designation']?.isNotEmpty == true ? data['user_details']['designation'] : ''}',
-                              style: TextStyle(fontWeight: FontWeight.normal, color: Colors.grey),
-                            ),
-                            Row(
+SizedBox(width: 6,),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.maps_home_work_outlined, color: Colors.grey, size: 20),
+                                Row(
+                                  children: [
+                                    Text(
+                                      data['user_details']['name']?.isNotEmpty == true
+                                          ? data['user_details']['name']
+                                          : 'Guest',  // Check if name is empty or null
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(width: 6),
+                                    Icon(Icons.verified_user_outlined, color: Colors.green, size: 18),
+                                  ],
+                                ),
                                 Text(
-                                  '${data['user_details']['company']?.isNotEmpty == true ? ' ${data['user_details']['company']}' : ''}',
+                                  '${data['user_details']['designation']?.isNotEmpty == true ? data['user_details']['designation'] : ''}',
                                   style: TextStyle(fontWeight: FontWeight.normal, color: Colors.grey),
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.maps_home_work_outlined, color: Colors.grey, size: 20),
+                                    Text(
+                                      '${data['user_details']['company']?.isNotEmpty == true ? ' ${data['user_details']['company']}' : ''}',
+                                      style: TextStyle(fontWeight: FontWeight.normal, color: Colors.grey),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ],
+                        ),
+                         // Add space between the image and the name
+
+
+                        Text(
+                          '${data['created_at']?.isNotEmpty == true ? data['created_at'] : ''} ',
+                          style: TextStyle(
+                              fontWeight:
+                              FontWeight
+                                  .normal,
+                              color: Colors.grey),
                         ),
                       ],
                     ),
@@ -171,13 +206,13 @@ class _SinglePostPageState extends State<SinglePostPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Looking for', style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16)),
+                      Text('Looking for', style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16,color: Colors.grey)),
                       SizedBox(height: 4),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Icon(CupertinoIcons.person_2, color: Colors.blue, size: 20),
+                          Image.asset( 'assets/vector.png',scale: 4,),
                           SizedBox(width: 4),
                           Text(
                             '${data['service_type']?.isNotEmpty == true ? data['service_type'] : ''}',
@@ -185,17 +220,81 @@ class _SinglePostPageState extends State<SinglePostPage> {
                           ),
                         ],
                       ),
+
+                      Divider(color: Colors.grey.shade300,),
+
+                      Text('Highlights', style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16,color: Colors.grey)),
+
+                      SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF5F6FB),
+                              borderRadius:
+                              BorderRadius.circular(
+                                  8),
+                            ),
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                              child: Row(
+                                mainAxisSize:
+                                MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.currency_rupee_outlined,color: Colors.black,size: 16,),
+                                  SizedBox(width: 4,),
+                                  Text(
+                                    'Budget: ₹ ${data['request_details'] != null && data['request_details']['budget']?.isNotEmpty == true ? data['request_details']['budget'] : 'xxxxx'}',
+                                    style: TextStyle(fontWeight: FontWeight.normal, color: Colors.grey, fontSize: 16,),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 14,),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF5F6FB),
+                              borderRadius:
+                              BorderRadius.circular(
+                                  8),
+                            ),
+                            child: Padding(
+                              padding:
+                              const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                              child: Row(
+                                mainAxisSize:
+                                MainAxisSize.min,
+                                children: [
+                                  Image.asset( 'assets/vector2.png',scale: 3,),
+                                  SizedBox(width: 4,),
+
+                                  Text(
+                                    'brand: ${data['request_details'] != null && data['request_details']['brand']?.isNotEmpty == true ? data['request_details']['brand'] : 'xxxxx'}',
+                                    style: TextStyle(fontWeight: FontWeight.normal, color: Colors.grey, fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+SizedBox(height: 10,),
                       Text(
                         'Budget: ₹ ${data['request_details'] != null && data['request_details']['budget']?.isNotEmpty == true ? data['request_details']['budget'] : 'xxxxx'}',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                        style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                       ),
                       Text(
                         'brand: ${data['request_details'] != null && data['request_details']['brand']?.isNotEmpty == true ? data['request_details']['brand'] : 'xxxxx'}',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                        style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                       ),
                       Text(
                         'Location: Goa & Kerala ',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                        style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                       ),
                       Text(
                         'Type: ${data['description']?.isNotEmpty == true ? data['description'] : ''}',
@@ -212,45 +311,71 @@ class _SinglePostPageState extends State<SinglePostPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFFE2FBEA),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min, // This ensures the container width is based on the content size
-                            children: [
-                              Image.asset('assets/whatsapp.png',scale: 2,),
-                              SizedBox(width: 10,),
-                              Text(
-                                'Share via WhatsApp',
-                                style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 14),
-                              )
+                      GestureDetector(
+                        onTap: (){
+                          toastification.show(
+                            context: context, // optional if you use ToastificationWrapper
+                            title: Text('Share via WhatsApp'),
+                            alignment: Alignment.bottomCenter,
+                            autoCloseDuration: const Duration(seconds: 3),
 
-                            ],
+                            primaryColor: Colors.green,
+                            backgroundColor: Colors.white,
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFFE2FBEA),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min, // This ensures the container width is based on the content size
+                              children: [
+                                Image.asset('assets/whatsapp.png',scale: 2,),
+                                SizedBox(width: 10,),
+                                Text(
+                                  'Share via WhatsApp',
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 14),
+                                )
+
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFFE2FBEA),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min, // This ensures the container width is based on the content size
-                            children: [
-                              Image.asset('assets/linkedin.png',scale: 2,),
-                              SizedBox(width: 10,),
-                              Text(
-                                'Share on LinkedIn',
-                                style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 14),
-                              )
+                      GestureDetector(
+                        onTap: (){
+                          toastification.show(
+                            context: context, // optional if you use ToastificationWrapper
+                            title: Text('Share on LinkedIn'),
+                            alignment: Alignment.bottomCenter,
+                            autoCloseDuration: const Duration(seconds: 3),
 
-                            ],
+                            primaryColor: Colors.blue,
+                            backgroundColor: Colors.white,
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFFE0EDF8),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min, // This ensures the container width is based on the content size
+                              children: [
+                                Image.asset('assets/linkedin.png',scale: 2,),
+                                SizedBox(width: 10,),
+                                Text(
+                                  'Share on LinkedIn',
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 14),
+                                )
+
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -258,7 +383,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                   ),
                 ),
                 // Add any additional widgets here
-                SizedBox(height: 16),
+                SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -266,7 +391,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey.shade400, fontSize: 18),
                   ),
                 ),
-
+                SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
@@ -280,7 +405,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                               children: [
                                 Text(
                                   "Category",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -298,7 +423,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                               children: [
                                 Text(
                                   "Platform",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -322,7 +447,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                               children: [
                                 Text(
                                   "Language",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -340,7 +465,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                               children: [
                                 Text(
                                   "Location",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -364,7 +489,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                               children: [
                                 Text(
                                   "Required Count",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -384,7 +509,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                               children: [
                                 Text(
                                   "Our Budget",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -410,7 +535,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                               children: [
                                 Text(
                                   "Brand collab with",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -428,7 +553,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
                               children: [
                                 Text(
                                   "Required followers",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16),
+                                  style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 4),
                                 Row(
@@ -508,11 +633,19 @@ SizedBox(height: 40,)
                       elevation: 0, // No shadow
                       padding: EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(30),
                         side: BorderSide(color: Colors.red, width: 2), // Red border
                       ),
                     ),
                     onPressed: () {
+                      toastification.show(
+                        context: context, // optional if you use ToastificationWrapper
+                        title: Text('Edit the account'),
+                        alignment: Alignment.center,
+                        autoCloseDuration: const Duration(seconds: 3),
+                        primaryColor: Colors.red,
+                        backgroundColor: Colors.white,
+                      );
                       // Handle Edit action
                     },
                     child: Text(
@@ -529,10 +662,18 @@ SizedBox(height: 40,)
                       backgroundColor: Colors.red,
                       padding: EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
                     onPressed: () {
+                      toastification.show(
+                        context: context, // optional if you use ToastificationWrapper
+                        title: Text('Close the account'),
+                        alignment: Alignment.center,
+                        autoCloseDuration: const Duration(seconds: 3),
+                        primaryColor: Colors.red,
+                        backgroundColor: Colors.white,
+                      );
                       // Handle Close action
                     },
                     child: Text("Close", style: TextStyle(color: Colors.white, fontSize: 16)),
